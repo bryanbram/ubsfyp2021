@@ -12,9 +12,9 @@
           <div class="formBx">
             <form action="" onsubmit="return false;">
               <h2>Sign In</h2>
-              <input type="text" name="" placeholder="Username" />
-              <input type="password" name="" placeholder="Password" />
-              <input type="submit" name="" value="Login" />
+              <input type="text" name="" placeholder="Username" required/>
+              <input type="password" name="" placeholder="Password" required/>
+              <input type="submit" id="enterbutton1" name="" value="Login" />
               <p class="signup">
                 Don't have an account ?
                 <a href="#" onclick="toggleForm();">Register.</a>
@@ -26,11 +26,11 @@
           <div class="formBx">
             <form action="" onsubmit="return false;">
               <h2>Create an account</h2>
-              <input type="text" name="" placeholder="Username" />
-              <input type="email" name="" placeholder="Email Address" />
-              <input type="password" name="" placeholder="Create Password" />
-              <input type="password" name="" placeholder="Confirm Password" />
-              <input type="submit" name="" value="Register" />
+              <input type="text" name="" placeholder="Username" required/>
+              <input type="email" name="" placeholder="Email Address" required/>
+              <input type="password" id="pw" name="" placeholder="Create Password" pattern="(?=.*\d).{10,20}" title="Must contain at least one letter, one number and 10-20 characters" required/>
+              <input type="password" id="cpw" name="" placeholder="Confirm Password" required/>
+              <input type="submit" id="enterbutton2" name="" value="Register" />
               <p class="signup">
                 Already have an account ?
                 <a href="#" onclick="toggleForm();">Sign in.</a>
@@ -41,5 +41,32 @@
         </div>
       </div>
     </section>
+    <script type="text/javascript">
+      function validate() {
+          var password = document.getElementById("pw").value;
+          var confirmPassword = document.getElementById("cpw").value;
+          if (password != confirmPassword) {
+              alert("Passwords do not match.");
+              return false;
+          }
+          return true;
+      }
+  </script>
+    <script>
+      document.getElementById("enterbutton1").addEventListener("click", function() {
+        window.location.href = "../landing/landing.html";
+      });
+      document.getElementById("enterbutton2").addEventListener("click", function() {
+        var password = document.getElementById("pw").value;
+        var confirmPassword = document.getElementById("cpw").value;
+        if (password != confirmPassword) {
+            alert("Passwords do not match.");
+            return false;
+        }
+        else {
+          window.location.href = "../landing/landing.html";
+        }
+      });
+    </script>
     <script src="test.js"></script>
   </body>

@@ -187,3 +187,10 @@ section .container.active .signinBx .imgBx {
     width: 100%;
   }
 }
+#enterbutton1:hover {
+  background-color: #f5bb00;
+}
+
+#enterbutton2:hover {
+  background-color: #f5bb00;
+}
