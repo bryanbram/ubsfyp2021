@@ -1,7 +1,8 @@
 body {
     font-family: tahoma;
     height: 100vh;
-    background-image: url(../login/jointhedots.jpg);
+    /* background-image: url(../login/jointhedots.jpg); */
+    background-color: black;
     background-size: cover;
     background-position: center;
     display: flex;
