@@ -3,7 +3,7 @@ Django==3.0.5
 django-modeladmin-reorder==0.3.1
 djangorestframework==3.12.2
 djongo==1.3.3
-mysqlclient @ ../env/mysqlclient-1.4.6-cp37-cp37m-win32.whl
+mysqlclient==1.4.6
 Pillow==8.1.0
 pymongo==3.11.2
 pytz==2020.5
