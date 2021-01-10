@@ -38,10 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'admin_reorder',
     'rest_framework',
     'api.apps.ApiConfig',
-    'frontend'
-    # 'snippets.apps.SnippetsConfig',
+    'frontend',
+
+    
 ]
 
 MIDDLEWARE = [
@@ -52,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'admin_reorder.middleware.ModelAdminReorder',
 ]
 
 ROOT_URLCONF = 'djreact.urls'
@@ -81,13 +84,26 @@ WSGI_APPLICATION = 'djreact.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, "db.sqlite3")
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, "db.sqlite3")
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'fyp',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
+    
     # 'default': {
     #     'ENGINE': 'djongo',
-    #     'NAME': 'db',
+    #     'NAME': 'djreact',
+    #     'HOST': 'mongodb://127.0.0.1:27017/djreact',
+    #     'USER':'',
+    #     'PASSWORD':''
+
     # }
 }
 
@@ -116,7 +132,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Singapore'
 
 USE_I18N = True
 
@@ -134,12 +150,38 @@ STATICFILES_DIRS = [
      os.path.join(ROOT_DIR, 'frontend/gui/build/static'),
 ]
 # 
-REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
-}
 
+# REST_FRAMEWORK = {
+#     # Use Django's standard `django.contrib.auth` permissions,
+#     # or allow read-only access for unauthenticated users.
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+#     ]
+# }
+
+ADMIN_REORDER = (
+    # Keep original label and models
+    # 'Gamification',
+
+    # Rename app
+    {'app': 'api', 'label': 'User Management','models': ('api.Account','api.Token')},
+
+    {'app': 'api', 'label': 'Game Settings','models': ('api.Chapter','api.Level','api.Mode','api.Game')},
+
+    {'app': 'api', 'label': 'Question Bank','models': ('api.Question',)},
+    # # Reorder app models
+    # {'app': 'auth', 'models': ('auth.User', 'auth.Group')},
+
+    # # Exclude models
+    # {'app': 'auth', 'models': ('auth.User', )},
+
+    # # Cross-linked models
+    # {'app': 'auth', 'models': ('auth.User', 'sites.Site')},
+
+    # # models with custom name
+    # {'app': 'auth', 'models': (
+    #     'auth.Group',
+    #     {'model': 'auth.User', 'label': 'Staff'},
+    # )},
+)
 
