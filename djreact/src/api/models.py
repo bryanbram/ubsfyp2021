@@ -30,15 +30,9 @@ class AccountManager(BaseUserManager):
 
 class Account(AbstractBaseUser):
     email = models.EmailField(primary_key=True)
-    username = models.CharField(max_length=10, unique=True)
+    username = models.CharField(max_length=20, unique=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    # date_joined = models.DateTimeField(auto_now_add=True)
-    # token = models.CharField(max_length=20,  unique = True) 
-    # has_registered= models.BooleanField(default = False)
-    # event = models.ForeignKey('Event', null=True, blank=True, related_name='organizers')
-    # twitter = models.CharField(max_length=50, null=False, blank=True)
-    # photo = models.ImageField(upload_to='event/organizers/', null=True, blank=True)
 
     objects = AccountManager()
 
@@ -67,15 +61,17 @@ class Token(models.Model):
         return get_random_string(length=str_length)
         # code = ''.join(random.choices(string.ascii_letters, k = length)) 
    
-    def save(self):
-        str_length = 10
+    def save(self,*args, **kwargs):
         if not self.token:
         # Generate token once, then check the db. If it alr exists, keep trying.
+            str_length = 10
             while True:
                 self.token = self.generate_unique_str(str_length)
                 if not Token.objects.filter(token=self.token).exists():
                     super(Token, self).save()
                     return
+        else:
+            super(Token, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['email']
