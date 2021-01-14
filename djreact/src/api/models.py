@@ -33,6 +33,7 @@ class Account(AbstractBaseUser):
     username = models.CharField(max_length=20, unique=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    has_taken_test= models.BooleanField(default=False)
 
     objects = AccountManager()
 
@@ -48,7 +49,9 @@ class Account(AbstractBaseUser):
     class Meta:
         ordering = ['email']
 
-    
+
+class EmailFormat(models.Model):
+    suffix = models.CharField(max_length=20,  unique = True) 
 
 class Token(models.Model):
 
@@ -108,7 +111,7 @@ class Level(models.Model):
         unique_together =  ['chapter_title','level_number']
 
 @receiver(post_save, sender=Chapter)
-def create_levels(sender, instance, created, **kwargs):
+def auto_create_levels(sender, instance, created, **kwargs): # To auto create levels when a chapter is created and number of levels for that chapter is given
     if created:
         for i in range(1, instance.number_of_levels+1):
             Level.objects.create(chapter_title = instance, level_number = i)
@@ -137,12 +140,12 @@ class Game(models.Model):
     def __str__(self):
         return f"{self.game_level}---{self.game_mode}---Game {self.game_number}"
 
-
 class Question(models.Model):
     # question_id = models.CharField(max_length=8,  unique = True)
     title = models.CharField(max_length=200)
     topic = models.CharField(max_length=200, blank=True)
     photo = models.ImageField(upload_to='photos/', null=True, blank=True)
+    mode = models.ForeignKey(Mode, on_delete=models.SET_NULL, null=True, blank=True)
     level = models.ForeignKey(Level, on_delete=models.SET_NULL, null=True, blank=True)
     game = models.ForeignKey(Game, on_delete=models.SET_NULL, null=True, blank=True)
     creation_time = models.DateTimeField(auto_now_add = True)
@@ -159,5 +162,28 @@ class Option(models.Model):
 
     def __str__(self):
         return self.option_text
+
+class UserTestResult(models.Model): 
+    # to track if a user has taken the level determination test
+    user =  models.ForeignKey(Account, on_delete=models.CASCADE)
+    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE)
+    score = models.IntegerField(default = 0)
+    level_result = models.IntegerField(default = 1)
+
+    class Meta:
+        unique_together =  ['user','chapter']
+
+class UserGameResult(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    finished_status = models.BooleanField(default=False)
+    result = models.IntegerField(default = 0)
+
+
+
+
+
+
+
 
 

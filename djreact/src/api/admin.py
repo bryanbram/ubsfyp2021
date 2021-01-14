@@ -2,7 +2,7 @@ from django.contrib import admin,messages
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from .models import Account, Question, Option, Token, Chapter, Level, Mode,Game
+from .models import Account, Question, Option, Token, Chapter, Level, Mode, Game, UserTestResult, UserGameResult
 from django import forms
 
 # Register your models here.
@@ -13,7 +13,7 @@ class OptionInline(admin.StackedInline):
 class QuestionAdmin(admin.ModelAdmin):
 
     fieldsets = [
-        ('Question',  {'fields': ['title', 'topic','level', 'game','photo']}),
+        ('Question',  {'fields': ['title', 'topic','level', 'mode','game','photo']}),
     ]
     list_display = ('title','level','game','creation_time')
     list_filter = ('creation_time','level')
@@ -38,8 +38,8 @@ class LevelAdmin(admin.ModelAdmin):
 
 class AccountAdmin(BaseUserAdmin):
 
-    list_display = ('email', 'username', 'is_admin')
-    list_filter = ('is_admin',)
+    list_display = ('email', 'username', 'is_admin','has_taken_test')
+    list_filter = ('is_admin','has_taken_test')
     fieldsets = (
         ('Personal info', {'fields': ('email','username', 'password')}),
         ('Permissions', {'fields': ('is_admin',)}),
@@ -55,6 +55,14 @@ class AccountAdmin(BaseUserAdmin):
     ordering = ('email',)
     filter_horizontal = ()
 
+class UserTestResultAdmin(admin.ModelAdmin):
+    list_display = ['user', 'chapter', 'score']
+    list_filter = ['user']
+
+class UserGameResultAdmin(admin.ModelAdmin):
+    list_display =['user','game', 'finished_status','result']
+    list_filter = ['user','game']
+
 admin.site.site_header = "H0ST4GE Admin Dashboard"
 admin.site.unregister(Group)
 admin.site.unregister(User)
@@ -64,9 +72,9 @@ admin.site.register(Chapter)
 admin.site.register(Level, LevelAdmin)
 admin.site.register(Mode, ModeAdmin)
 admin.site.register(Game, GameAdmin)
-admin.site.register(Account,AccountAdmin)
-# admin.site.register()
-# admin.site.register()
+admin.site.register(Account, AccountAdmin)
+admin.site.register(UserGameResult, UserGameResultAdmin)
+admin.site.register(UserTestResult, UserTestResultAdmin)
 # admin.site.register()
 # admin.site.register()
 # admin.site.register()
