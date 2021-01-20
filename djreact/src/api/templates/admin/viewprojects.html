@@ -22,12 +22,30 @@
         <tr>
             <th>{{ x.name }}</td>
             <td>
-                <a href ="{{x.projectKey}}/">{{ x.types.BUG }}</a>
+                {% if x.types.BUG != 0 %}
+                <a href ="bug/{{x.projectKey}}/">{{ x.types.BUG }}</a>
+                {% endif %}
+
+                {% if x.types.BUG == 0 %}
+                {{ x.types.BUG }}
+                {% endif %}
             </td>
+
             <td>{{ x.types.CODE_SMELL }}</td>
-            <td>{{ x.types.VULNERABILITY }}</td>
+
+            <td>
+                {% if x.types.VULNERABILITY != 0 %}
+                <a href ="vulnerability/{{x.projectKey}}/">{{ x.types.VULNERABILITY}}</a>
+                {% endif %}
+                
+                {% if x.types.VULNERABILITY == 0 %}
+                {{ x.types.VULNERABILITY }}
+                {% endif %}
+            </td>
+            
         </tr>
         {% endfor %}
+        </table>
     {% endif %}
     </div>
 </div>
