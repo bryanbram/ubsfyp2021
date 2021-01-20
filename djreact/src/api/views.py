@@ -67,15 +67,19 @@ def ProjectList(request, *args,**kwargs):
 
 def ProjectVulnerabilityFacet(request,*args,**kwargs):
 
-    response = GetProjectFacets(args,'sonarsourceSecurity')
+    print(2)
+    para = kwargs['prokey']
+    response = GetProjectFacets(para,'sonarsourceSecurity')
     status = "is_ok"
-    data = {}
+    print(response)
     if type(response) == 'str':
         status = "Error: Unable to connect to Sonarcloud!!!!!!!"
     else:
         data = response
-    response = {'data': data, 'status':status}
-    return JsonResponse(data = response)
+    #response = {'data': response, 'status':status}
+    #return JsonResponse(data = response)
+    return render(request, "viewvulnerability.html",context={'data': data},status = 200)
+
 
 
 def ProjectBugsList(request,*args, **kwargs):
@@ -101,7 +105,10 @@ def ProjectBugsList(request,*args, **kwargs):
 
 
 def ProjectVulnerabilityList(request,*args, **kwargs):
-    response = GetIssuesList(args[0],args[1])
+
+    param1 = kwargs['prokey']
+    param2 = kwargs['issue']
+    response = GetIssuesList(param1,param2)
     status = "is_ok"
     data = {}
     if type(response) == 'str':

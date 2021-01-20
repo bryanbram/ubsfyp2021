@@ -105,7 +105,8 @@ output: {
         {'issueKey': key,
          'rule' : rule,
          'fileKey' : componment,
-         'textLine' :line
+         'severity' : severity,
+         'textLine' :line,
          'msg': message
          }
     ]
