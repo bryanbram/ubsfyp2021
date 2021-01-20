@@ -179,7 +179,12 @@ class UserGameResult(models.Model):
     finished_status = models.BooleanField(default=False)
     result = models.IntegerField(default = 0)
 
+class OrganizationKey(models.Model):
+    organizationKey = models.TextField(max_length=10)
 
+    def __str__(self):
+        return self.organizationKey
+    
 
 
 

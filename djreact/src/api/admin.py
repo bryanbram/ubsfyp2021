@@ -2,8 +2,11 @@ from django.contrib import admin,messages
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from .models import Account, Question, Option, Token, Chapter, Level, Mode, Game, UserTestResult, UserGameResult
+from .models import Account, Question, Option, Token, Chapter, Level, Mode, Game, UserTestResult, UserGameResult, OrganizationKey
 from django import forms
+
+from django.urls import path
+from django.template.response import TemplateResponse
 
 # Register your models here.
 class OptionInline(admin.StackedInline):
@@ -63,6 +66,10 @@ class UserGameResultAdmin(admin.ModelAdmin):
     list_display =['user','game', 'finished_status','result']
     list_filter = ['user','game']
 
+class OrganizationKeyAdmin(admin.ModelAdmin):
+    list_display = ['organizationKey']
+
+
 admin.site.site_header = "H0ST4GE Admin Dashboard"
 admin.site.unregister(Group)
 admin.site.unregister(User)
@@ -75,6 +82,7 @@ admin.site.register(Game, GameAdmin)
 admin.site.register(Account, AccountAdmin)
 admin.site.register(UserGameResult, UserGameResultAdmin)
 admin.site.register(UserTestResult, UserTestResultAdmin)
+admin.site.register(OrganizationKey)
 # admin.site.register()
 # admin.site.register()
 # admin.site.register()
