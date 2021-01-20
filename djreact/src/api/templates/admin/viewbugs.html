@@ -1,0 +1,44 @@
+{% extends 'base_site.html' %}
+
+
+{% block content %}
+{% comment %} <div class='row text-center'>
+    <div class='col'>
+        <h1>Administration</h1>
+    </div>
+</div> {% endcomment %}
+
+<div class='row text-center'>
+    <div class='col'>
+        <h1>Bug List</h1>
+    </div>
+</div>
+
+<div class='row text-center'>
+    <div class='col'>
+    {% if data %}
+        <table style = 'width:100%'>
+        {% for x in data%}
+        <tr>
+            <td>
+                <h2>{{ x.textLine }}</h2>
+                <h3>Comment: {{x.msg}}</h3>
+                <h3>Severity: {{x.severity}}   <a href ="#">Why this issue?</a></h3>
+            </td>
+        </tr>
+        {% endfor %}
+    {% endif %}
+    </div>
+</div>
+
+
+{% if rule%}
+<div class='row text-center'>
+    <div class='col'>
+    <h1>Description Here</h1>
+    </div>
+</div>
+{% endif %}
+
+
+{% endblock content %}

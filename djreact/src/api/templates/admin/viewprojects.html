@@ -1,0 +1,38 @@
+{% extends 'base_site.html' %}
+
+
+{% block content %}
+<div class='row text-center'>
+    <div class='col'>
+        <h1>Administration</h1>
+    </div>
+</div>
+
+<div class='row text-center'>
+    <div class='col'>
+    {% if data %}
+        <table style = 'width:100%'>
+        <tr>
+            <th>Project</th>
+            <th>Bug</th>
+            <th>Code Smell</th>
+            <th>Vulnerability</th>
+        </tr>
+        {% for x in data%}
+        <tr>
+            <th>{{ x.name }}</td>
+            <td>
+                <a href ="{{x.projectKey}}/">{{ x.types.BUG }}</a>
+            </td>
+            <td>{{ x.types.CODE_SMELL }}</td>
+            <td>{{ x.types.VULNERABILITY }}</td>
+        </tr>
+        {% endfor %}
+    {% endif %}
+    </div>
+</div>
+
+
+{% endblock content %}
+
+
