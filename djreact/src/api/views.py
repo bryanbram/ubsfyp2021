@@ -6,7 +6,7 @@ from .serializers import QuestionSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import requests
-from .util import GetProjectList, GetProjectFacets, GetIssuesList, GetSourceCode,GetBugDetail
+from .util import GetProjectList, GetProjectFacets, GetIssuesList, GetSourceCode,GetBugDetail, GetRule
 
 
 
@@ -42,7 +42,6 @@ output:{
 data = {[]}
 """
 def ProjectList(request, *args,**kwargs):
-    print(1)
     para = kwargs['org']
     response = GetProjectList(para)['data']
     status = "is_ok"
@@ -66,8 +65,6 @@ def ProjectList(request, *args,**kwargs):
 
 
 def ProjectVulnerabilityFacet(request,*args,**kwargs):
-
-    print(2)
     para = kwargs['prokey']
     response = GetProjectFacets(para,'sonarsourceSecurity')
     status = "is_ok"
@@ -82,11 +79,27 @@ def ProjectVulnerabilityFacet(request,*args,**kwargs):
 
 
 
+"""
+output: [
+       {'issueKey': p['key'],
+        //'rule': p['rule'],
+        'severity': p['severity'],
+        //'fileKey': p['component'],
+        'textLine': code,
+        'msg':p['message']
+        'rule': {
+            'key' : rulekey,
+            'title': name,
+            'htmlDesc': htmlDesc
+            }
+        }
+]
+"""
+
 def ProjectBugsList(request,*args, **kwargs):
-    # print(2)
-    # print(kwargs['prokey'])
-    param = kwargs['prokey']
-    response = GetBugDetail(param)
+    param1 = kwargs['org']
+    param2 = kwargs['prokey']
+    response = GetBugDetail(param2)
     status = "is_ok"
 
     if type(response) == 'str':
@@ -95,10 +108,14 @@ def ProjectBugsList(request,*args, **kwargs):
         status = "No Bugs!!! Great!!!"
     else:
         for p in response:
+            rulekey = p['rule']
             filename = p['fileKey']
             textline = p['textLine']
+            rule = GetRule(param1,rulekey)
+            p['rule'] = rule
             code = GetSourceCode(filename, textline, textline)[0]
             p['textLine'] = code
+
 
     #response = {'data': response, 'status':status}
     return render(request, "viewbugs.html",context={'data': response},status = 200)
