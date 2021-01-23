@@ -5,9 +5,6 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models import Account, Question, Option, Token, Chapter, Level, Mode, Game, UserTestResult, UserGameResult, OrganizationKey
 from django import forms
 
-from django.urls import path
-from django.template.response import TemplateResponse
-
 # Register your models here.
 class OptionInline(admin.StackedInline):
     model = Option
@@ -41,17 +38,17 @@ class LevelAdmin(admin.ModelAdmin):
 
 class AccountAdmin(BaseUserAdmin):
 
-    list_display = ('email', 'username', 'is_admin','has_taken_test')
-    list_filter = ('is_admin','has_taken_test')
+    list_display = ('email', 'username', 'is_staff','has_taken_test')
+    list_filter = ('is_staff','has_taken_test')
     fieldsets = (
         ('Personal info', {'fields': ('email','username', 'password')}),
-        ('Permissions', {'fields': ('is_admin',)}),
+        ('Permissions', {'fields': ('is_staff',)}),
     )
 
     add_fieldsets = (
         ('Personal info', {
             'classes': ('wide',),
-            'fields': ('email', 'username','password1', 'password2','is_admin')}
+            'fields': ('email', 'username','password1', 'password2','is_staff')}
         ),
     )
     search_fields = ('email','username')
@@ -69,10 +66,9 @@ class UserGameResultAdmin(admin.ModelAdmin):
 class OrganizationKeyAdmin(admin.ModelAdmin):
     list_display = ['organizationKey']
 
-
 admin.site.site_header = "H0ST4GE Admin Dashboard"
 admin.site.unregister(Group)
-admin.site.unregister(User)
+# admin.site.unregister(User)
 admin.site.register(Question,QuestionAdmin)
 admin.site.register(Token,TokenAdmin)
 admin.site.register(Chapter)
@@ -83,7 +79,6 @@ admin.site.register(Account, AccountAdmin)
 admin.site.register(UserGameResult, UserGameResultAdmin)
 admin.site.register(UserTestResult, UserTestResultAdmin)
 admin.site.register(OrganizationKey)
-# admin.site.register()
 # admin.site.register()
 # admin.site.register()
 # admin.site.register()
