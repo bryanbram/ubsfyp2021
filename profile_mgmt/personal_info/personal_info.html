@@ -1,0 +1,212 @@
+<!DOCTYPE html> 
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="personal_info.css">
+        <script type = "text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Exo+2:400,500,700,900">
+
+        <body>
+            <canvas id=c></canvas>
+            <!-- MENU -->
+            <nav class="menu">
+                <ul>
+                    <li><a href="../../landing/landing.html">Home</a></li>
+                    <li><a href="personal_info.html">Profile</a></li>
+                    <li><a href="../../profile_mgmt/team/invitation.html">Invitation</a></li>
+                    <li><a href="../../profile_mgmt/team/team.html">Team</a></li>
+                </ul>
+            </nav>  
+            <h1>Profile</h1>
+            <div class="login-box">
+                <div class="container">
+                    <form class="is-readonly">
+                        <div class = "user-box">
+                            <p>Username</p>
+                            <div class="form-group">
+                                <input type="text" class="form-control is-disabled" id="exampleInputPassword1" placeholder="Name" value="SamaraSsr" disabled>
+                            </div>
+                            <p>Email</p>
+                            <div class="form-group">
+                                <p style = "color: white;">sya@hotmail.com</style><br><br>
+                                <!-- <input type="email" class="form-control is-disabled" id="exampleInputEmail1" placeholder="Email" value="samara@company.com" readonly></input> -->
+                                <i><small class="w-100 p-3" style="color: white;">You cannot change your email. Contact administrator for help.</small></i>
+                            </div>
+                            <p>Password</p>
+                            <div class="form-group">
+                                <input type="password" class="form-control is-disabled" id="exampleInputEmail1" placeholder="Password" value="passwo" disabled>
+                            </div>
+                            <button type="button" class="btn btn-default btn-edit js-edit">Edit</button>
+                            <button type="button" class="btn btn-default btn-save js-save">Save</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- successful deletion, go back to sign up page -->
+                <button type="button" style = "margin-top: 60px;left: 31%;">Delete Account</button>
+            </div>
+
+            <script>
+                $(document).ready(function(){
+                    $('.js-edit, .js-save').on('click', function(){
+                    var $form = $(this).closest('form');
+                    $form.toggleClass('is-readonly is-editing');
+                    var isReadonly  = $form.hasClass('is-readonly');
+                    $form.find('input,textarea').prop('disabled', isReadonly);
+                });
+                });
+
+                $(function() {
+                function slideMenu() {
+                    var activeState = $("#menu-container .menu-list").hasClass("active");
+                    $("#menu-container .menu-list").animate({left: activeState ? "0%" : "-100%"}, 400);
+                }
+                $("#menu-wrapper").click(function(event) {
+                    event.stopPropagation();
+                    $("#hamburger-menu").toggleClass("open");
+                    $("#menu-container .menu-list").toggleClass("active");
+                    slideMenu();
+
+                    $("body").toggleClass("overflow-hidden");
+                });
+
+                $(".menu-list").find(".accordion-toggle").click(function() {
+                    $(this).next().toggleClass("open").slideToggle("fast");
+                    $(this).toggleClass("active-tab").find(".menu-link").toggleClass("active");
+
+                    $(".menu-list .accordion-content").not($(this).next()).slideUp("fast").removeClass("open");
+                    $(".menu-list .accordion-toggle").not(jQuery(this)).removeClass("active-tab").find(".menu-link").removeClass("active");
+                });
+                }); 
+
+                // animated background
+                var w = c.width = window.innerWidth,
+                    h = c.height = window.innerHeight,
+                    ctx = c.getContext( '2d' ),
+                    
+                    opts = {
+                    
+                    len: 20,
+                    count: 50,
+                    baseTime: 10,
+                    addedTime: 10,
+                    dieChance: .05,
+                    spawnChance: 1,
+                    sparkChance: .1,
+                    sparkDist: 10,
+                    sparkSize: 2,
+                    
+                    color: 'hsl(hue,100%,light%)',
+                    baseLight: 50,
+                    addedLight: 10, // [50-10,50+10]
+                    shadowToTimePropMult: 6,
+                    baseLightInputMultiplier: .01,
+                    addedLightInputMultiplier: .02,
+                    
+                    cx: w / 2,
+                    cy: h / 2,
+                    repaintAlpha: .04,
+                    hueChange: .1
+                    },
+                    
+                    tick = 0,
+                    lines = [],
+                    dieX = w / 2 / opts.len,
+                    dieY = h / 2 / opts.len,
+                    
+                    baseRad = Math.PI * 2 / 6;
+                    
+                ctx.fillStyle = 'black';
+                ctx.fillRect( 0, 0, w, h );
+
+                function loop() {
+                
+                window.requestAnimationFrame( loop );
+                
+                ++tick;
+                
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = 'rgba(0,0,0,alp)'.replace( 'alp', opts.repaintAlpha );
+                ctx.fillRect( 0, 0, w, h );
+                ctx.globalCompositeOperation = 'lighter';
+                
+                if( lines.length < opts.count && Math.random() < opts.spawnChance )
+                    lines.push( new Line );
+                
+                lines.map( function( line ){ line.step(); } );
+                }
+                function Line(){
+                
+                this.reset();
+                }
+                Line.prototype.reset = function(){
+                
+                this.x = 0;
+                this.y = 0;
+                this.addedX = 0;
+                this.addedY = 0;
+                
+                this.rad = 0;
+                
+                this.lightInputMultiplier = opts.baseLightInputMultiplier + opts.addedLightInputMultiplier * Math.random();
+                
+                this.color = opts.color.replace( 'hue', tick * opts.hueChange );
+                this.cumulativeTime = 0;
+                
+                this.beginPhase();
+                }
+                Line.prototype.beginPhase = function(){
+                
+                this.x += this.addedX;
+                this.y += this.addedY;
+                
+                this.time = 0;
+                this.targetTime = ( opts.baseTime + opts.addedTime * Math.random() ) |0;
+                
+                this.rad += baseRad * ( Math.random() < .5 ? 1 : -1 );
+                this.addedX = Math.cos( this.rad );
+                this.addedY = Math.sin( this.rad );
+                
+                if( Math.random() < opts.dieChance || this.x > dieX || this.x < -dieX || this.y > dieY || this.y < -dieY )
+                    this.reset();
+                }
+                Line.prototype.step = function(){
+                
+                ++this.time;
+                ++this.cumulativeTime;
+                
+                if( this.time >= this.targetTime )
+                    this.beginPhase();
+                
+                var prop = this.time / this.targetTime,
+                    wave = Math.sin( prop * Math.PI / 2  ),
+                    x = this.addedX * wave,
+                    y = this.addedY * wave;
+                
+                ctx.shadowBlur = prop * opts.shadowToTimePropMult;
+                ctx.fillStyle = ctx.shadowColor = this.color.replace( 'light', opts.baseLight + opts.addedLight * Math.sin( this.cumulativeTime * this.lightInputMultiplier ) );
+                ctx.fillRect( opts.cx + ( this.x + x ) * opts.len, opts.cy + ( this.y + y ) * opts.len, 2, 2 );
+                
+                if( Math.random() < opts.sparkChance )
+                    ctx.fillRect( opts.cx + ( this.x + x ) * opts.len + Math.random() * opts.sparkDist * ( Math.random() < .5 ? 1 : -1 ) - opts.sparkSize / 2, opts.cy + ( this.y + y ) * opts.len + Math.random() * opts.sparkDist * ( Math.random() < .5 ? 1 : -1 ) - opts.sparkSize / 2, opts.sparkSize, opts.sparkSize )
+                }
+                loop();
+
+                window.addEventListener( 'resize', function(){
+                
+                w = c.width = window.innerWidth;
+                h = c.height = window.innerHeight;
+                ctx.fillStyle = 'black';
+                ctx.fillRect( 0, 0, w, h );
+                
+                opts.cx = w / 2;
+                opts.cy = h / 2;
+                
+                dieX = w / 2 / opts.len;
+                dieY = h / 2 / opts.len;
+                });
+   
+            </script>
+        </body>
+    </head>
+</html>
