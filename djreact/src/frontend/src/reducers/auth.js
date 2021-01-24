@@ -76,7 +76,7 @@ export default function(state = initialState, action) {
         case LOGIN_FAIL:
             return {
                 ...state,
-                error: "login_fail",
+                error: "Wrong email or password!",
                 message: null
             }
         case SIGNUP_FAIL:
