@@ -6,7 +6,7 @@ from .serializers import QuestionSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import requests
-from .util import GetProjectList, GetProjectFacets, GetIssuesList, GetSourceCode,GetBugDetail, GetRule
+from .util import GetProjectList, GetProjectFacets, GetIssuesList, GetSourceCode,GetBugDetail, GetRule, GetVulnerabilityDetail
 
 
 
@@ -91,7 +91,7 @@ def ProjectVulnerabilityFacet(request,*args,**kwargs):
                 data.append({'val': p ,
                              'count' : response[p],
                             'issues': issue})
-    print(data)
+    #print(data)
     return render(request, "viewvulnerability.html",context={'data': data},status = 200)
 
 
@@ -124,14 +124,15 @@ def ProjectBugsList(request,*args, **kwargs):
     elif len(response) == 0:
         status = "No Bugs!!! Great!!!"
     else:
-        for p in response:
-            rulekey = p['rule']
-            filename = p['fileKey']
-            textline = p['textLine']
-            rule = GetRule(param1,rulekey)
-            p['rule'] = rule
-            code = GetSourceCode(filename, textline, textline)[0]
-            p['textLine'] = code
+        status = 200
+        # for p in response:
+        #     rulekey = p['rule']
+        #     filename = p['fileKey']
+        #     textline = p['textLine']
+        #     rule = GetRule(param1,rulekey)
+        #     p['rule'] = rule
+        #     code = GetSourceCode(filename, textline, textline)[0]
+        #     p['textLine'] = code
 
 
     #response = {'data': response, 'status':status}
@@ -144,6 +145,10 @@ output:
 def ProjectVulnerability(request,*args, **kwargs):
     param1 = kwargs['prokey']
     param2 = kwargs['issuekey']
+
+    response = GetVulnerabilityDetail(param1,param2)
+    # print(param1)
+    # print(param2)
 
     return render(request, "addquestion.html",context={'data': response},status = 200)
 

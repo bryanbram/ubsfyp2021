@@ -1,10 +1,86 @@
 {% extends 'base_site.html' %}
 
+{% block extrastyle %}
+
+<style>
+
+    .column {
+    float: left;
+    width: 50%;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+    content: "";
+    display: table;
+    clear: both;
+    }
+
+</style>
+
+{% endblock %}
+
 {% block content %}
+
 <div class='row text-center'>
     <div class='col'>
-        <h1>VULNERABILITY HERE!!!!!</h1>
+        <h1>ISSUE DETAIL HERE!!!!!</h1>
     </div>
 </div>
+
+
+<div class="row text-center">
+
+    <div class="column" >
+    {% if data %}
+            <table style = 'width:100%'>
+            <tr>
+                <th> <h1>Comment: <h1>{{data.comment}}</h1> </th>
+            </tr>
+
+            {% for item in data.detail %}
+            <tr><th></th></tr>
+            <tr>
+                <td>
+                {% for line in item.code %}
+                <p>{{line}}<p>
+                {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3>Reasons: </h3>
+                    {% for msg in item.msg %}
+                    <p>{{msg}}</p>
+                    {% endfor %}
+                </td>   
+            </tr> 
+            {% endfor%} 
+
+            {% comment %} <tr>
+                <button class="accordion">Why this issue?</button>
+                <div class="panel">
+                <h3>{{ data.ruleDesc.name }}</h3>
+                <p>{{data.ruleDesc.htmlDesc}}</p>
+            </tr> {% endcomment %}
+            </table>
+        {% endif %}
+
+    </div>
+
+    <div class = 'column' >
+
+        <table style = 'width:100%' id = 'myTable'>
+            <tr>
+                <th>
+                    <h1>Add Question Here</h1>
+                </th>
+            </tr>
+            
+        </table>
+
+    </div>
+
+  </div>
 
 {% endblock content %}

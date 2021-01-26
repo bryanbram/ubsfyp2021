@@ -23,6 +23,6 @@ urlpatterns = [
     path('projectlist/<str:org>/', ProjectList, name = 'projectlist'),
     path('projectlist/<str:org>/bug/<str:prokey>/', ProjectBugsList, name = 'buglist'),
     path('projectlist/<str:org>/vulnerability/<str:prokey>/', ProjectVulnerabilityFacet, name = 'vulnerabilitylist'),
-    path('projectlist/<str:org>/vulnerability/<str:prokey>/<str:issuekey>', ProjectVulnerability, name = 'vulnerability'),
+    path('projectlist/<str:org>/vulnerability/<str:prokey>/<str:issuekey>/', ProjectVulnerability, name = 'vulnerability'),
 
 ]

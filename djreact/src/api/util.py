@@ -107,7 +107,8 @@ output: {
          'rule' : rule,
          'fileKey' : componment,
          'severity' : severity,
-         'textLine' :line,
+         #'textLine' :line,
+         'textLine':code,
          'msg': message
          }
     ]
@@ -118,6 +119,8 @@ def GetBugDetail(prokey):
                 'types': 'BUG',
                 'ps': 10}
     data = SoncloudAPICall(url2,pload)
+    orgkey = data['organizations'][0]['key']
+
     response = []
     if type(data) == 'str':
         return data
@@ -126,13 +129,22 @@ def GetBugDetail(prokey):
         components = data['issues']
         if(len(components) != 0):
             for p in components:
-                response.append({'issueKey': p['key'],
-                                 'rule': p['rule'],
-                                 'severity': p['severity'],
-                                 'fileKey': p['component'],
-                                 'textLine': p['line'],
-                                 'msg':p['message']
-                                 })
+                ruleDesc = GetRule(orgkey,p['rule'])
+                textLine = GetSourceCode(p['component'],p['line'],p['line'])[0]
+                response.append({
+                    'issueKey':p['key'],
+                    'rule': ruleDesc,
+                    'textLine': textLine,
+                    'msg': p['message'],
+                    'severity':p['severity']
+                })
+                # response.append({'issueKey': p['key'],
+                #                  'rule': p['rule'],
+                #                  'severity': p['severity'],
+                #                  'fileKey': p['component'],
+                #                  'textLine': p['line'],
+                #                  'msg':p['message']
+                #                  })
     return response
 
 
@@ -192,17 +204,20 @@ def GetRule(orgkey, rulekey):
 
 """
 output:{
-    ruleKey: rule
-    locations: [
+    #ruleKey: rule
+    ruleDesc: rule
+    comment: message
+    details: [
         {
             componenet:
-            startline:
-            endline:
+            #startline:
+            #endline:
+            code:
             msg:[]
         }
     ]
 }
-file_dict = {[startline, endline]:[filekey,index]}
+file_dict = {} # [startline, component]: [ endline, [msgs]]
 """
 
 def GetVulnerabilityDetail(prokey, issuekey):
@@ -210,8 +225,16 @@ def GetVulnerabilityDetail(prokey, issuekey):
              'issues': issuekey
              }
     data = SoncloudAPICall(url2,pload)
-    response = {'ruleKey': data['issues'][0]['rule']}
-    flow = []
+
+    #get rule description
+    rulekey = data['issues'][0]['rule']
+    orgkey = data['organizations'][0]['key']
+    rule = GetRule(orgkey,rulekey)
+
+
+    comment = data['issues'][0]['message']
+    response = {'ruleDesc': rule, 'comment':comment}
+    detail = []
     file_dict = {} # [startline, component]: [ endline, [msgs]]
     if type(data) == 'str':
         return data
@@ -226,7 +249,7 @@ def GetVulnerabilityDetail(prokey, issuekey):
             endline = location['textRange']['endLine']
             message = location['msg']
 
-            key = [startline, component]
+            key = (startline, component)
             message_list = [message]
             if key not in file_dict:
                 file_dict[key] = [endline, message_list]
@@ -236,17 +259,23 @@ def GetVulnerabilityDetail(prokey, issuekey):
                     file_dict[key][0] = endline
     
     for i in file_dict:
-        flow.append({
+        code = GetSourceCode(i[1],i[0],file_dict[i][0])
+        detail.append({
             'component': i[1],
-            'startLine': i[0],
-            'endLine': file_dict[i][0],
-            'msg': file_dict[i][1]
+            'msg':file_dict[i][1],
+            'code':code
         })
+        # flow.append({
+        #     'component': i[1],
+        #     'startLine': i[0],
+        #     'endLine': file_dict[i][0],
+        #     'msg': file_dict[i][1]
+        # })
 
 
-    response['locations'] = flow
+    response['detail'] = detail
     
-    return file_dict
+    return response
 
 
 
