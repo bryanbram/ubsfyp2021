@@ -16,7 +16,7 @@ router.register('token', TokenViewSet, 'token')
 # urlpatterns = router.urls
 urlpatterns = [
     path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     #path for calling sonarcloud api
     #path('sonarcloud/', ProjectView, name = 'sonarcloud'),
