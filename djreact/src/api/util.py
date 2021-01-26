@@ -66,23 +66,23 @@ def GetProjectFacets(prokey,facet):
 
 
 """
-output: {
-    data: [
-        {'issueKey': key,
-         'severity': severity,
-         'msg':pmessage
-         }
-    ]
-}
+output: [
+    {
+        'issueKey': key
+        'severity': severity
+        'msg' : message
+    }
+]
 """
-def GetIssuesList(prokey, type):
+def GetIssuesList(prokey, value):
 
     pload = {'componentKeys': prokey, 
-            'sonarsourceSecurity': type
+            'sonarsourceSecurity': value
             }
     data = SoncloudAPICall(url2,pload)
     response = []
-    if type(data) == 'str':
+    #print(data)
+    if type(data) == "str":
         return data
     else:
         #print(data)
@@ -90,6 +90,7 @@ def GetIssuesList(prokey, type):
         if(len(components) != 0):
             for p in components:
                 response.append({'issueKey': p['key'],
+                                 'ruleKey' : p['rule'],
                                  'severity': p['severity'],
                                  'msg':p['message']
                                  })
@@ -115,7 +116,7 @@ output: {
 def GetBugDetail(prokey):
     pload = {'componentKeys': prokey, 
                 'types': 'BUG',
-                'ps': 5}
+                'ps': 10}
     data = SoncloudAPICall(url2,pload)
     response = []
     if type(data) == 'str':
@@ -185,8 +186,59 @@ def GetRule(orgkey, rulekey):
         components = data['rule']
         response['key'] = components['key']
         response['name'] = components['name']
-        response['htmlDesc'] =  components['htmlDesc']
-    return response         
+        response['htmlDesc'] =  components['mdDesc']
+    return response 
+
+
+"""
+output:{
+    ruleKey: rule
+    locations: [
+        {
+            componenet:
+            startline:
+            endline:
+            msg:[]
+        }
+    ]
+}
+file_dict = {[startline, endline]:[filekey,index]}
+"""
+
+def GetVulnerabilityDetail(prokey, issuekey):
+    pload = {'componentKeys': prokey, 
+             'issues': issuekey
+             }
+    data = SoncloudAPICall(url2,pload)
+    response = {'ruleKey': data['issues'][0]['rule']}
+    flow = []
+    file_dict = {}
+    if type(data) == 'str':
+        return data
+    elif data.get('errors') != None:
+        return " Not Found!!!"
+    else:
+        #print(data)
+        locations = data['issues'][0]['flows'][0]['locations']
+        for location in locations:
+            component = location['component']
+            startline = location['textRange']['startLine']
+            endline = location['textRange']['endLine']
+            message = location['msg']
+
+            if
+
+            flow.append({
+                'component': component,
+                'startLine': startline,
+                'endLine': endline,
+                'msg':message
+            })
+
+
+    response['locations'] = flow
+    return response 
+
 
 
 

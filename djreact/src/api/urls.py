@@ -3,7 +3,7 @@ from django.urls import path, include
 from rest_framework import routers
 from .api import QuestionViewSet, AccountViewSet,TokenViewSet
 # from .views import QuestionView
-from .views import ProjectList, ProjectBugsList,ProjectView, ProjectVulnerabilityList, ProjectVulnerabilityFacet
+from .views import ProjectList, ProjectBugsList,ProjectView,  ProjectVulnerabilityFacet, ProjectVulnerability
 
 router = routers.DefaultRouter()
 router.register('question', QuestionViewSet, 'question')
@@ -23,6 +23,6 @@ urlpatterns = [
     path('projectlist/<str:org>/', ProjectList, name = 'projectlist'),
     path('projectlist/<str:org>/bug/<str:prokey>/', ProjectBugsList, name = 'buglist'),
     path('projectlist/<str:org>/vulnerability/<str:prokey>/', ProjectVulnerabilityFacet, name = 'vulnerabilitylist'),
-    path('projectlist/<str:org>/vulnerability/<str:prokey>/<str:issue>', ProjectVulnerabilityList, name = 'list'),
+    path('projectlist/<str:org>/vulnerability/<str:prokey>/<str:issuekey>', ProjectVulnerability, name = 'vulnerability'),
 
 ]

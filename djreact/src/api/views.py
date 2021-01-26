@@ -60,21 +60,38 @@ def ProjectList(request, *args,**kwargs):
     #return JsonResponse(data = response)
     return render(request, "viewprojects.html",context={'data': data},status = 200)
 
-
-
-
-
+"""
+output: [
+    {
+        val: xss
+        count: 3
+        issues : [
+            {
+            issueKey,
+            ruleKey,
+            severity,
+            msg
+            }
+        ]
+    }
+]
+"""
 def ProjectVulnerabilityFacet(request,*args,**kwargs):
     para = kwargs['prokey']
     response = GetProjectFacets(para,'sonarsourceSecurity')
     status = "is_ok"
-    print(response)
+    #print(response)
+    data = []
     if type(response) == 'str':
         status = "Error: Unable to connect to Sonarcloud!!!!!!!"
     else:
-        data = response
-    #response = {'data': response, 'status':status}
-    #return JsonResponse(data = response)
+        for p in response.keys():
+            if(p != 'others'):
+                issue = GetIssuesList(para,p)
+                data.append({'val': p ,
+                             'count' : response[p],
+                            'issues': issue})
+    print(data)
     return render(request, "viewvulnerability.html",context={'data': data},status = 200)
 
 
@@ -120,24 +137,16 @@ def ProjectBugsList(request,*args, **kwargs):
     #response = {'data': response, 'status':status}
     return render(request, "viewbugs.html",context={'data': response},status = 200)
 
+"""
+output: 
+"""
 
-def ProjectVulnerabilityList(request,*args, **kwargs):
-
+def ProjectVulnerability(request,*args, **kwargs):
     param1 = kwargs['prokey']
-    param2 = kwargs['issue']
-    response = GetIssuesList(param1,param2)
-    status = "is_ok"
-    data = {}
-    if type(response) == 'str':
-        status = "Error: Unable to connect to Sonarcloud!!!!!!!"
-    elif len(response) == 0:
-        status = "No Vulnerable Issues about " + args[1] + "!!! Great!!!"
-    else:
-        data = response
-    response = {'data': data, 'status':status}
-    return JsonResponse(data = response)
+    param2 = kwargs['issuekey']
 
-###def VulnerabilityDetail(request,*args,**kwargs):
+    return render(request, "addquestion.html",context={'data': response},status = 200)
+
 
 
 
