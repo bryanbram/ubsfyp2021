@@ -212,7 +212,7 @@ def GetVulnerabilityDetail(prokey, issuekey):
     data = SoncloudAPICall(url2,pload)
     response = {'ruleKey': data['issues'][0]['rule']}
     flow = []
-    file_dict = {}
+    file_dict = {} # [startline, component]: [ endline, [msgs]]
     if type(data) == 'str':
         return data
     elif data.get('errors') != None:
@@ -226,18 +226,27 @@ def GetVulnerabilityDetail(prokey, issuekey):
             endline = location['textRange']['endLine']
             message = location['msg']
 
-            if
-
-            flow.append({
-                'component': component,
-                'startLine': startline,
-                'endLine': endline,
-                'msg':message
-            })
+            key = [startline, component]
+            message_list = [message]
+            if key not in file_dict:
+                file_dict[key] = [endline, message_list]
+            else:
+                file_dict[key][1] += message_list
+                if file_dict[key][0] < endline:
+                    file_dict[key][0] = endline
+    
+    for i in file_dict:
+        flow.append({
+            'component': i[1],
+            'startLine': i[0],
+            'endLine': file_dict[i][0],
+            'msg': file_dict[i][1]
+        })
 
 
     response['locations'] = flow
-    return response 
+    
+    return file_dict
 
 
 
