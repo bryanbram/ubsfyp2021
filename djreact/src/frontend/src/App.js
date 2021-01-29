@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import Home from './L/Home';
-import Login from './L/Login';
-import Signup from './L/Signup';
-import Activate from './L/Activate';
-import ResetPassword from './L/ResetPassword';
-import ResetPasswordConfirm from './L/ResetPasswordConfirm';
+import Home from './Login/Home';
+import Login from './Login/Login';
+import Signup from './Login/Signup';
+import Activate from './Login/Activate';
+import ResetPassword from './Login/ResetPassword';
+import ResetPasswordConfirm from './Login/ResetPasswordConfirm';
 
 
 import { Provider } from 'react-redux';
