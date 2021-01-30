@@ -1,21 +1,22 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, Http404
 from rest_framework import generics, status
-from .models import Question
+from .models import Question, Option
 from .serializers import QuestionSerializer
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import requests
 from .util import GetProjectList, GetProjectFacets, GetIssuesList, GetSourceCode,GetBugDetail, GetRule, GetVulnerabilityDetail
-
-
+from .form import QuestionForm,OptionForm
+from django.contrib import messages
 
 # Create your views here.
 ## e.g. /hello, /main, end point for a url
 
-class QuestionView(generics.ListAPIView): #CreateAPIView - to post
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
+# class QuestionView(generics.ListAPIView): #CreateAPIView - to post
+#     queryset = Question.objects.all()
+#     serializer_class = QuestionSerializer
 
 
 
@@ -42,9 +43,10 @@ output:{
 data = {[]}
 """
 def ProjectList(request, *args,**kwargs):
+    if not request.user.is_staff :
+        return redirect('/admin/')
     para = kwargs['org']
     response = GetProjectList(para)['data']
-    status = "is_ok"
     data = []
     if type(response) == 'str':
         status = "Error: Unable to connect to Sonarcloud!!!!!!!"
@@ -77,9 +79,10 @@ output: [
 ]
 """
 def ProjectVulnerabilityFacet(request,*args,**kwargs):
+    if not request.user.is_staff :
+        return redirect('/admin/')
     para = kwargs['prokey']
     response = GetProjectFacets(para,'sonarsourceSecurity')
-    status = "is_ok"
     #print(response)
     data = []
     if type(response) == 'str':
@@ -114,10 +117,10 @@ output: [
 """
 
 def ProjectBugsList(request,*args, **kwargs):
-    param1 = kwargs['org']
+    if not request.user.is_staff :
+        return redirect('/admin/')
     param2 = kwargs['prokey']
     response = GetBugDetail(param2)
-    status = "is_ok"
 
     if type(response) == 'str':
         status = "Error: Unable to connect to Sonarcloud!!!!!!!"
@@ -125,17 +128,6 @@ def ProjectBugsList(request,*args, **kwargs):
         status = "No Bugs!!! Great!!!"
     else:
         status = 200
-        # for p in response:
-        #     rulekey = p['rule']
-        #     filename = p['fileKey']
-        #     textline = p['textLine']
-        #     rule = GetRule(param1,rulekey)
-        #     p['rule'] = rule
-        #     code = GetSourceCode(filename, textline, textline)[0]
-        #     p['textLine'] = code
-
-
-    #response = {'data': response, 'status':status}
     return render(request, "viewbugs.html",context={'data': response},status = 200)
 
 """
@@ -149,10 +141,24 @@ def ProjectVulnerability(request,*args, **kwargs):
     response = GetVulnerabilityDetail(param1,param2)
     # print(param1)
     # print(param2)
-
-    return render(request, "addquestion.html",context={'data': response},status = 200)
-
-
+    questionform = QuestionForm()
+    optionform = OptionForm()
+    if not request.user.is_staff :
+        return redirect('/admin/')
+    if request.method == 'POST':
+        question_form = QuestionForm(request.POST)
+        option_form = OptionForm(request.POST)
+        if questionform.is_valid:
+            question_form.save()
+            instance = question_form.save(commit=False)
+        if option_form.is_valid():
+            options = option_form.cleaned_data
+            Option(question=instance, option_text=options['option_1'], explanation= options['explanation_1'], is_correct=options['is_correct_1']).save()
+            Option(question=instance, option_text=options['option_2'], explanation= options['explanation_2'], is_correct=options['is_correct_2']).save()
+            Option(question=instance, option_text=options['option_3'], explanation= options['explanation_3'], is_correct=options['is_correct_3']).save()
+            #print(optionform.cleaned_data)
+        messages.success(request, "Successfully Created")
+    return render(request, "addquestion.html",context={'data': response, 'Questionform': questionform , 'Optionform':optionform},status = 200)
 
 
 

@@ -1,6 +1,7 @@
 import requests
 from django.shortcuts import render, redirect
 import re
+from bs4 import BeautifulSoup
 
 
 
@@ -138,13 +139,6 @@ def GetBugDetail(prokey):
                     'msg': p['message'],
                     'severity':p['severity']
                 })
-                # response.append({'issueKey': p['key'],
-                #                  'rule': p['rule'],
-                #                  'severity': p['severity'],
-                #                  'fileKey': p['component'],
-                #                  'textLine': p['line'],
-                #                  'msg':p['message']
-                #                  })
     return response
 
 
@@ -198,7 +192,10 @@ def GetRule(orgkey, rulekey):
         components = data['rule']
         response['key'] = components['key']
         response['name'] = components['name']
-        response['htmlDesc'] =  components['mdDesc']
+        htmlDesc = components['mdDesc']
+        description = BeautifulSoup(htmlDesc,"html.parser")
+        all_text = ''.join(description.findAll(text=True))
+        response['htmlDesc'] =  all_text
     return response 
 
 
@@ -265,14 +262,6 @@ def GetVulnerabilityDetail(prokey, issuekey):
             'msg':file_dict[i][1],
             'code':code
         })
-        # flow.append({
-        #     'component': i[1],
-        #     'startLine': i[0],
-        #     'endLine': file_dict[i][0],
-        #     'msg': file_dict[i][1]
-        # })
-
-
     response['detail'] = detail
     
     return response
