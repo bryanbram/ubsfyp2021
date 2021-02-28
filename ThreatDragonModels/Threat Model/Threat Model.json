@@ -26,6 +26,15 @@
               "id": "72da91f3-4e89-4bbc-9a28-43ba54cfbcc2",
               "z": 1,
               "hasOpenThreats": false,
+              "threats": [
+                {
+                  "status": "Mitigated",
+                  "severity": "Medium",
+                  "type": "Tampering",
+                  "title": "Received data from browser",
+                  "mitigation": "Validate data."
+                }
+              ],
               "attrs": {
                 ".element-shape": {
                   "class": "element-shape hasNoOpenThreats isInScope"
