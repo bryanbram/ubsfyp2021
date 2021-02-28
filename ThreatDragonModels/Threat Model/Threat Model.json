@@ -5,6 +5,22 @@
   },
   "detail": {
     "contributors": [],
-    "diagrams": []
+    "diagrams": [
+      {
+        "title": "Website",
+        "thumbnail": "./public/content/images/thumbnail.jpg",
+        "id": 0
+      },
+      {
+        "title": "Login function",
+        "thumbnail": "./public/content/images/thumbnail.jpg",
+        "id": 1
+      },
+      {
+        "title": "Password change",
+        "thumbnail": "./public/content/images/thumbnail.jpg",
+        "id": 2
+      }
+    ]
   }
 }
